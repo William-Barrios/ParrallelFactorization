@@ -1,0 +1,12 @@
+#%Module1.0
+conflict upcxx
+module-whatis "UPC++ version 2023.9.0"
+proc ModulesHelp { } {
+    puts stderr "UPC++ version 2023.9.0"
+    puts stderr "Configured for CC='/usr/bin/mpicc' CXX='/usr/bin/mpicxx'"
+    puts stderr "For documentation see https://upcxx.lbl.gov"
+}
+append-path PATH "/home/william/sympack/upcxx-2023.9.0/home/william/sympack/upcxx-2023.9.0/bin"
+setenv UPCXX_INSTALL "/home/william/sympack/upcxx-2023.9.0/home/william/sympack/upcxx-2023.9.0"
+#setenv UPCXX_CODEMODE "optional site-specific default"
+#setenv UPCXX_NETWORK "optional site-specific default"

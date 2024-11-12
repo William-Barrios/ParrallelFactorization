@@ -1,0 +1,13 @@
+********* LOGFILE OF P12 *********
+**********************************
+Matrix dimension: 914898
+CUDA Mode enabled
+Matrix structure expanded
+MMD used
+Ordering done
+Supernodes found
+Relaxation done
+Permute time: 0.14144
+Symbfact done
+time subtree 0.000617981
+#supernodes = 33549 #cells = 155437 which is 23626424 bytes

@@ -1,0 +1,13 @@
+********* LOGFILE OF P10 *********
+**********************************
+Matrix dimension: 914898
+CUDA Mode enabled
+Matrix structure expanded
+MMD used
+Ordering done
+Supernodes found
+Relaxation done
+Permute time: 0.139363
+Symbfact done
+time subtree 0.000463009
+#supernodes = 33549 #cells = 155437 which is 23626424 bytes

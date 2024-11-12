@@ -1,0 +1,1 @@
+include: 'https://bitbucket.org/berkeleylab/upcxx-ci/raw/master/gitlab-ci.yml'

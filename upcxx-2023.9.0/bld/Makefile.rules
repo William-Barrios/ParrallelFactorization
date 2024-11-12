@@ -1,0 +1,173 @@
+#
+# Top-level Makefile, minus the configuration variables
+#
+
+SHELL = $(UPCXX_BASH)
+DST =
+
+default: all ; @: # empty rule
+
+force:
+
+MAKEFLAGS += --no-print-directory
+
+# Echo an arbitrary make/environment variable
+echovar: force; @echo $(VARNAME)=\"$($(VARNAME))\"
+
+COLOR = 0 # environment is ignored but command line is honored
+# Anything other than COLOR=1 "bleaches" the corresponding flags
+ifneq ($(strip $(COLOR)),1)
+UPCXX_COLOR_CFLAGS =
+UPCXX_COLOR_CXXFLAGS =
+endif
+
+# To prevent application of pass-through rule upon 'include':
+Makefile $(upcxx_src)/bld/Makefile.rules $(upcxx_src)/bld/Makefile.tests: ; @: # empty rule
+$(upcxx_src)/bld/%.mak: ; @: # empty rule
+
+BLDDIR = $(upcxx_bld)/bld
+GASNET_BLDDIR = $(BLDDIR)/gasnet.$(firstword $(UPCXX_DBGOPT))
+
+include $(upcxx_src)/bld/gasnet.mak
+
+# If user passes NETWORK use it.
+# Else use UPCXX_DEFAULT_NETWORK
+HAVE_CONDUIT=$(filter-out $(UNOFFICIAL_CONDUITS),$(CONDUITS))
+DFLT_CONDUIT=$(firstword $(NETWORK) $(UPCXX_DEFAULT_NETWORK))
+
+install install-opt install-debug: force
+	@if [[ ! '$(prefix)' =~ ^/ ]]; then \
+	   echo 'ERROR: installation prefix "$(prefix)" is not an absolute path' >&2; \
+	   exit 1; \
+	 fi
+	@$(MAKE) -C $(BLDDIR) $@ || $(MAKE) failure TARGET=installation
+	@$(MAKE) install-hook || $(MAKE) failure TARGET=installation
+
+install-hook: force
+	@export CONDUITS='$(CONDUITS)';                      \
+	 cd $(upcxx_src) &&                                  \
+	 . utils/install-common.sh &&                        \
+	 conduit_default="$(DFLT_CONDUIT)" &&       \
+	 install_to="$(prefix)" install_common
+	@echo; \
+	 echo 'UPC++ installation complete.'; \
+	 echo '  Default network: $(DFLT_CONDUIT).  Available networks: $(HAVE_CONDUIT).'; \
+	 if [[ -n '$(UPCXX_CONDUIT_WARNINGS)' ]]; then echo '  $(UPCXX_CONDUIT_WARNINGS)'; fi; \
+	 echo '  One may reinstall setting NETWORK=... to override the default.'; \
+	 echo 'Recommended next steps:'; \
+	 echo '  See "Post-install recommendations" in'; \
+	 echo '  $(upcxx_src)/INSTALL.md'
+
+all all-opt all-debug: force
+	@$(MAKE) -C $(BLDDIR) $@ || $(MAKE) failure TARGET=build
+	@$(MAKE) config-summary || $(MAKE) failure TARGET=build
+	@$(MAKE) all-hook || $(MAKE) failure TARGET=build
+
+# on-demand summary of GASNet configuration
+config-summary: force
+	@out=; \
+	 for d in $(UPCXX_DBGOPT); do \
+	   dir=$(BLDDIR)/gasnet.$$d; \
+	   if [[ -f $$dir/config-summary.txt ]] ; then \
+	     out=$$dir/config-summary.txt ; \
+	   fi; \
+	 done; \
+	 if [[ -f $$out ]] ; then cat $$out ; fi ; : "favor output of last summary (generally opt)"
+
+all-hook: force
+	@echo; \
+	 echo 'UPC++ build complete.';    \
+	 echo 'Recommended next steps:';  \
+	 echo "  1. '$(GMAKE_SHORT) check'";    \
+	 echo "  2. '$(GMAKE_SHORT) install [NETWORK=...]'"; \
+	 echo '     One may optionally set NETWORK=... to override the default.'; \
+	 echo '     Default network: $(DFLT_CONDUIT).  Available networks: $(HAVE_CONDUIT).'; \
+	 if [[ -n '$(UPCXX_CONDUIT_WARNINGS)' ]]; then echo '     $(UPCXX_CONDUIT_WARNINGS)'; fi
+
+distclean-hook: force
+	-[[ $(upcxx_src) = $(upcxx_bld) ]] || rm -R $(BLDDIR)/Makefile
+	-rm -Rf $(upcxx_bld)/Makefile $(upcxx_bld)/bin/upcxx $(upcxx_bld)/bin/upcxx-run $(upcxx_bld)/bin/upcxx-meta $(upcxx_bld)/bin/upcxx-info $(GASNET_UNPACKED)
+
+distclean: force
+	@$(MAKE) -C $(BLDDIR) $@
+	@$(MAKE) $@-hook
+
+EXE_VPATH = "$(upcxx_src)/test" "$(upcxx_src)/example" "$(upcxx_src)/bench"
+exe run: force
+	@if test -z "$(SRC)"; then \
+	    echo "ERROR: target '$@' requires a SRC" >&2; \
+	    echo "example: 'make $@ SRC=test/hello_upcxx.cpp'" >&2; \
+	    exit 1; \
+	 fi
+	@src=$(SRC);                                                   \
+	 if [[ ! -f "$(SRC)" && "$(SRC)" != /* ]]; then                \
+	   for d in $$(find $(EXE_VPATH) -type d); do                  \
+	     if [[ -f "$$d/$(SRC)" ]]; then                            \
+	       src="$$d/$(SRC)"; break;                                \
+	     fi                                                        \
+	   done;                                                       \
+	   if [[ -z "$$src" ]]; then                                   \
+	    echo "ERROR: file SRC='$(SRC)' does not exist" >&2;        \
+	    exit 1;                                                    \
+	   fi                                                          \
+	 fi;                                                           \
+	 $(MAKE) -C $(BLDDIR) $@ SRC="$$src" STARTDIR="$(shell pwd)"
+
+# Default is pass-through
+# TODO?: HOOK and LOCAL "magic" like UPCR's multiconf
+%: force; @$(MAKE) -C $(BLDDIR) $@
+
+failure: force
+	@( \
+	  echo '********'; \
+	  echo 'UPC++ $(TARGET) failed.'; \
+	  echo 'Please examine the log above for intructions which may resolve this problem.'; \
+	  jopt='$(filter -j%,$(MAKEFLAGS))'; \
+	  if [[ -n "$$jopt" ]]; then \
+	    echo "Please try again without '$$jopt', which may resolve the problem or at least produce clearer messages."; \
+	  fi; \
+	  echo 'If you still cannot resolve this problem, then please report the ENTIRE output to: upcxx@googlegroups.com'; \
+	  echo '********'; \
+	 ) >&2
+	@exit 1
+
+.PHONY: force echovar failure
+.PHONY: install install-hook
+.PHONY: distclean distclean-hook
+.PHONY: exe run
+
+## Check/tests targets pass-through to their own Makefile
+## Note that we rewrite NETWORKS to permit various punctuation as delimiters
+TEST_TARGETS = check tests tests-clean test_install run-tests run-tests-installed \
+	       dev-tests dev-tests-opt dev-tests-debug dev-tests-seq dev-tests-par dev-run-tests \
+	       dev-check dev-check-opt dev-check-debug dev-check-seq dev-check-par dev-tests-clean \
+	       dev-tests-seq-opt dev-tests-seq-debug dev-tests-par-opt dev-tests-par-debug \
+	       dev-check-seq-opt dev-check-seq-debug dev-check-par-opt dev-check-par-debug
+$(TEST_TARGETS): force
+	@NETWORKS='$(shell tr ",.:;/" " " <<<"$(NETWORKS)")'; \
+	$(MAKE) -f $(upcxx_src)/bld/Makefile.tests $@ $${NETWORKS:+NETWORKS="$$NETWORKS"}
+	$($@-hook)
+.PHONY: $(TEST_TARGETS)
+
+check-hook = \
+	@echo 'Recommended next steps:';  \
+	 echo "  If you have not already, you may now '$(GMAKE_SHORT) install [NETWORK=...]'"; \
+	 echo '     One may optionally set NETWORK=... to override the default.'; \
+	 echo '     Default network: $(DFLT_CONDUIT).  Available networks: $(HAVE_CONDUIT).'; \
+	 if [[ -n '$(UPCXX_CONDUIT_WARNINGS)' ]]; then echo '     $(UPCXX_CONDUIT_WARNINGS)'; fi
+
+## GASNet pass-through
+# usage: make gasnet [DO_WHAT=target] [NETWORK=xyz] [UPCXX_CODEMODE={opt,debug}]
+#   DO_WHAT defaults to 'all'
+#   NETWORK defaults to the default network
+#   UPCXX_CODEMODE defaults to 'debug' (unless `--enable-single=opt`)
+gasnet: force
+	@codemode=$(firstword $(UPCXX_CODEMODE) $(UPCXX_DBGOPT)); \
+	 set -x;                                       \
+	 $(MAKE) "$${DO_WHAT:-all}"                    \
+	         -C "$(BLDDIR)/gasnet.$$codemode/$${NETWORK:-$(UPCXX_DEFAULT_NETWORK)}-conduit"
+PHONY: gasnet
+
+
+
+.NOTPARALLEL:

@@ -1,0 +1,80 @@
+CONFIG_CC:                          /usr/bin/mpicc
+CONFIG_CXX:                         /usr/bin/mpicxx
+UPCXX_BASH:                         /usr/bin/bash
+UPCXX_PYTHON:                       /usr/bin/env python3
+UPCXX_CUDA:                         1
+UPCXX_CUDA_NVCC:                    /usr/bin/nvcc
+UPCXX_CUDA_CPPFLAGS:                <null>
+UPCXX_CUDA_LIBFLAGS:                -Wl,--start-group -L/usr/lib/x86_64-linux-gnu/stubs -L/usr/lib/x86_64-linux-gnu -lcudadevrt -lcudart_static -lrt -lpthread -ldl -Wl,--end-group -lcuda
+UPCXX_HIP:                          <null>
+UPCXX_HIP_CPPFLAGS:                 <null>
+UPCXX_HIP_LIBFLAGS:                 <null>
+UPCXX_ZE:                           <null>
+UPCXX_ZE_CPPFLAGS:                  <null>
+UPCXX_ZE_LIBFLAGS:                  <null>
+UPCXX_VALGRIND:                     <null>
+UPCXX_DISCONTIG:                    <null>
+UPCXX_FORCE_LEGACY_RELOCATIONS:     <null>
+UPCXX_MPSC_QUEUE:                   UPCXXI_MPSC_QUEUE_ATOMIC
+GASNet RELEASE_VERSION:             2023.9.0
+GASNet EX_SPEC_VERSION_MAJOR:       0
+GASNet EX_SPEC_VERSION_MINOR:       17
+GASNet CONFIGURE_ARGS:              '--enable-kind-cuda-uva' '--with-cc=/usr/bin/mpicc' '--with-cflags=' '--with-cxx=/usr/bin/mpicxx' '--with-cxxflags=' '--with-ldflags=-Wl,--build-id ' '--disable-parsync' '--enable-seq' '--enable-par' '--enable-pthreads' '--disable-segment-everything' '--disable-ibv-rcv-thread' '--disable-debug'
+GASNet CONDUITS:                    smp udp mpi ibv
+PLATFORM_COMPILER_IDSTR:            |COMPILER_FAMILY:GNU|COMPILER_VERSION:13.2.0|COMPILER_FAMILYID:1|STD:__STDC__,__STDC_VERSION__=201710L|misc:13.2.0|
+PLATFORM_CXX_IDSTR:                 |COMPILER_FAMILY:GNU|COMPILER_VERSION:13.2.0|COMPILER_FAMILYID:1|STD:__STDC__,__cplusplus=201703L|misc:13.2.0|
+PLATFORM_MPI_CC_IDSTR:              |COMPILER_FAMILY:GNU|COMPILER_VERSION:13.2.0|COMPILER_FAMILYID:1|STD:__STDC__,__STDC_VERSION__=201710L|misc:13.2.0|
+BUILD_ID:                           Mon Nov 11 13:29:37 -05 2024 william
+SYSTEM_TUPLE:                       x86_64-pc-linux-gnu
+SYSTEM_NAME:                        DESKTOP-IPGED33
+
+--------------------------------------------------------------------
+UPC++ configure output:
+
+UPC++ configure: ./configure --prefix=home/william/sympack/upcxx-2023.9.0 --enable-cuda
+Unpacking /home/william/sympack/upcxx-2023.9.0/src/GASNet-2023.9.0.tar.gz
+
+System: Linux DESKTOP-IPGED33 5.15.153.1-microsoft-standard-WSL2 #1 SMP Fri Mar 29 23:14:13 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+Distributor ID:	Ubuntu
+Description:	Ubuntu 24.04.1 LTS
+Release:	24.04
+Codename:	noble
+ 
+Date: Mon Nov 11 13:27:40 -05 2024
+Current directory: /home/william/sympack/upcxx-2023.9.0
+Install directory: /home/william/sympack/upcxx-2023.9.0/home/william/sympack/upcxx-2023.9.0
+Configure command: ./configure --prefix=home/william/sympack/upcxx-2023.9.0 --enable-cuda
+Configure environment:
+    CC='mpicc'
+    CXX='mpicxx'
+    GASNET='/home/william/sympack/upcxx-2023.9.0/src/GASNet-2023.9.0.tar.gz'
+    UPCXX_CUDA_NVCC='/usr/bin/nvcc'
+ 
+GNU bash, version 5.2.21(1)-release (x86_64-pc-linux-gnu)
+Copyright (C) 2022 Free Software Foundation, Inc.
+ 
+/usr/bin/mpicxx
+g++ (Ubuntu 13.2.0-23ubuntu4) 13.2.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+/usr/bin/mpicc
+gcc (Ubuntu 13.2.0-23ubuntu4) 13.2.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+ 
+/usr/bin/python3: Python 3.12.3
+
+/usr/bin/gmake
+GNU Make version 4.3
+
+/usr/bin/nvcc:
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2023 NVIDIA Corporation
+Built on Fri_Jan__6_16:45:21_PST_2023
+Cuda compilation tools, release 12.0, V12.0.140
+Build cuda_12.0.r12.0/compiler.32267302_0
+

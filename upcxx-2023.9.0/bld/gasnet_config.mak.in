@@ -1,0 +1,20 @@
+# BEGIN gasnet_config.mak.in
+# Processed by GASNet's config.status for inclusion in bld/gasnet.{codemode}.mak
+
+# Programs we use
+PERL = @PERL@
+
+# Probed parameters
+CONDUITS = @CONDUITS@
+EXESUFFIX = @EXESUFFIX@
+
+# Probed compiler features
+GASNET_CC_FAMILY  = @CC_FAMILY@
+GASNET_CXX_FAMILY = @CXX_FAMILY@
+GASNET_CC_SUBFAMILY  = @CC_SUBFAMILY@
+GASNET_CXX_SUBFAMILY = @CXX_SUBFAMILY@
+
+# Needed for tests using std::thread in SEQ mode
+TEST_THREADED_FLAGS = @GASNET_THREAD_DEFINES@ @GASNET_THREAD_LIBS@
+
+# END gasnet_config.mak.in

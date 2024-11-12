@@ -1,0 +1,35 @@
+----------------------------------------------------------------------
+GASNet configuration:
+
+ Portable conduits:
+ -----------------
+  Portable SMP-loopback conduit (smp)                ON     (auto)
+  OpenFabrics Interfaces conduit (ofi)               OFF    (disabled)
+  Portable UDP/IP conduit (udp)                      ON     (auto)
+  Portable MPI conduit (mpi)                         ON     (auto)
+
+ Native, high-performance conduits:
+ ---------------------------------
+  Unified Communication X conduit (ucx)              OFF    (not found)
+  InfiniBand IB Verbs conduit (ibv)                  ON     (auto)
+  Cray XC Aries conduit *DEPRECATED* (aries)         OFF    (not found)
+
+ Memory kinds:
+ ------------
+  GPUs with NVIDIA CUDA API (cuda-uva)               ON     (enabled)
+  GPUs with AMD HIP API (hip)                        OFF    (not enabled)
+  GPUs with Intel oneAPI *EXPERIMENTAL* (ze)         OFF    (not enabled)
+
+ Some conduits and memory kinds require --enable-XXX configure flags and/or
+ additional variables providing the install location of vendor drivers.
+ See the GASNet documentation for details.
+
+ Misc Settings
+ -------------
+  MPI compatibility:      yes
+  Pthreads support:       yes
+  Segment config:         fast
+  PSHM support:           posix
+  Atomics support:        native
+  PMI support:            no
+----------------------------------------------------------------------

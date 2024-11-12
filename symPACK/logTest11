@@ -1,0 +1,12 @@
+********* LOGFILE OF P11 *********
+**********************************
+Matrix dimension: 914898
+CUDA Mode enabled
+Matrix structure expanded
+MMD used
+Ordering done
+Supernodes found
+Relaxation done
+Permute time: 0.144923
+Symbfact done
+time subtree 0.000657082

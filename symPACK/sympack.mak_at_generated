@@ -1,0 +1,10 @@
+SYMPACK_DIR = /usr/local
+
+SYMPACK_INCLUDE = -I${SYMPACK_DIR}/include
+
+SYMPACK_INCLUDE += -I/home/william/sympack/symPACK/include -I/home/william/sympack/symPACK -I/usr/lib/x86_64-linux-gnu/openmpi/include -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -I/home/william/sympack/upcxx-2023.9.0/bld/upcxx.assert0.optlev3.dbgsym0.gasnet_seq.udp/include -I/home/william/sympack/upcxx-2023.9.0/bld/upcxx.assert0.optlev3.dbgsym0.gasnet_seq.udp/gen_include -I/home/william/sympack/upcxx-2023.9.0/bld/GASNet-2023.9.0 -I/home/william/sympack/upcxx-2023.9.0/bld/GASNet-2023.9.0/udp-conduit -I/home/william/sympack/upcxx-2023.9.0/bld/GASNet-2023.9.0/other -I/home/william/sympack/upcxx-2023.9.0/bld/GASNet-2023.9.0/other/amudp -I/home/william/sympack/upcxx-2023.9.0/bld/gasnet.opt/other/amudp -I/home/william/sympack/upcxx-2023.9.0/bld/GASNet-2023.9.0/extended-ref/vis -I/home/william/sympack/upcxx-2023.9.0/bld/GASNet-2023.9.0/extended-ref/coll -I/home/william/sympack/upcxx-2023.9.0/bld/GASNet-2023.9.0/extended-ref/ratomic -I/home/william/sympack/upcxx-2023.9.0/bld/GASNet-2023.9.0/extended-ref -I/home/william/sympack/upcxx-2023.9.0/bld/GASNet-2023.9.0/other/kinds -I/home/william/sympack/upcxx-2023.9.0/bld/gasnet.opt
+SYMPACK_DEFINITIONS += -DRCMIDXSIZE=32 -DMMDIDXSIZE=32 -DAMDIDXSIZE=32 -DITREE -D_DSW_ITREE_ -DUPCXXI_ASSERT_ENABLED=0 -DUPCXXI_BACKEND=1 -DUPCXXI_BACKEND_GASNET_SEQ=1 -DUPCXXI_CUDA_ENABLED=1 -D_GNU_SOURCE=1 -DGASNET_SEQ
+
+SYMPACK_LIB = /usr/lib/x86_64-linux-gnu/liblapack.so /usr/lib/x86_64-linux-gnu/libblas.so -ldl -lrt
+
+

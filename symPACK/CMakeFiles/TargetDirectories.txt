@@ -1,0 +1,16 @@
+/home/william/sympack/symPACK/CMakeFiles/run_sympack.dir
+/home/william/sympack/symPACK/CMakeFiles/examples.dir
+/home/william/sympack/symPACK/CMakeFiles/edit_cache.dir
+/home/william/sympack/symPACK/CMakeFiles/rebuild_cache.dir
+/home/william/sympack/symPACK/CMakeFiles/list_install_components.dir
+/home/william/sympack/symPACK/CMakeFiles/install.dir
+/home/william/sympack/symPACK/CMakeFiles/install/local.dir
+/home/william/sympack/symPACK/CMakeFiles/install/strip.dir
+/home/william/sympack/symPACK/src/CMakeFiles/sympack.dir
+/home/william/sympack/symPACK/src/CMakeFiles/run_sympack2D.dir
+/home/william/sympack/symPACK/src/CMakeFiles/edit_cache.dir
+/home/william/sympack/symPACK/src/CMakeFiles/rebuild_cache.dir
+/home/william/sympack/symPACK/src/CMakeFiles/list_install_components.dir
+/home/william/sympack/symPACK/src/CMakeFiles/install.dir
+/home/william/sympack/symPACK/src/CMakeFiles/install/local.dir
+/home/william/sympack/symPACK/src/CMakeFiles/install/strip.dir
