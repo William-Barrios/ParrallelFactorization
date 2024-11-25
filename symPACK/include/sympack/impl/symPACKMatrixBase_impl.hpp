@@ -4,6 +4,8 @@
 #include <sympack/symPACKMatrixBase.hpp>
 
 #include "sympack/Ordering.hpp"
+#include <fstream>
+#include <algorithm>
 
 namespace symPACK{
   extern "C" {
@@ -39,45 +41,137 @@ namespace symPACK{
 namespace symPACK {
 
   template <typename T> 
-    inline void symPACKMatrixMeta<T>::findSupernodes(ETree& tree, Ordering & aOrder, std::vector<Int> & cc,std::vector<Int> & supMembership, std::vector<Int> & xsuper, Int maxSize ){
+    /*inline void symPACKMatrixMeta<T>::findSupernodes(ETree& tree, Ordering & aOrder, std::vector<Int> & cc, std::vector<Int> & supMembership, std::vector<Int> & xsuper, Int maxSize ){
+    SYMPACK_TIMER_START(FindSupernodes);
+    Int size = this->iSize_;
+
+    // Redimensionar supMembership
+    supMembership.resize(size);
+
+    Int nsuper = 1;  // Número de supernodo
+    Int supsize = 1;  // Contador de nodos en el supernodo actual
+    supMembership[0] = 1;
+
+    // Para almacenar el tamaño de cada supernodo
+    std::vector<Int> supernodeSizes(nsuper, 0); 
+    supernodeSizes[nsuper - 1] = supsize;  // El primer supernodo tiene un nodo
+
+    for (Int i = 2; i <= size; i++) {
+      Int prev_parent = tree.PostParent(i - 2);
+      if (prev_parent == i) {
+        if (cc[i - 2] == cc[i - 1] + 1) {
+          if (supsize < maxSize || maxSize == 0) {
+            ++supsize;
+            supMembership[i - 1] = nsuper;
+            supernodeSizes[nsuper - 1] = supsize;  // Actualizamos el tamaño del supernodo
+            continue;
+          }
+        }
+      }
+
+      // Nuevo supernodo
+      nsuper++;
+      supsize = 1;  // El nuevo supernodo comienza con 1 nodo
+      supMembership[i - 1] = nsuper;
+      supernodeSizes.push_back(supsize);  // Agregamos el nuevo supernodo
+    }
+
+    // Crear el vector de xsuper
+    xsuper.resize(nsuper + 1);
+    Int lstsup = nsuper + 1;
+    for (Int i = size; i >= 1; --i) {
+      Int ksup = supMembership[i - 1];
+      if (ksup != lstsup) {
+        xsuper[lstsup - 1] = i + 1;
+      }
+      lstsup = ksup;
+    }
+    xsuper[0] = 1;
+
+    // Calcular el tamaño del supernodo más grande
+    Int maxSupernodeSize = 0;
+    for (Int i = 0; i < nsuper; ++i) {
+      if (supernodeSizes[i] > maxSupernodeSize) {
+        maxSupernodeSize = supernodeSizes[i];
+      }
+    }
+
+    // Guardar la cantidad de nodos por supernodo en un archivo
+    std::ofstream outFile("supernode_sizes.txt");  // Abre el archivo en modo escritura
+    if (outFile.is_open()) {
+      outFile << "Tamaño de cada supernodo:\n";
+      for (Int i = 0; i < nsuper; ++i) {
+        outFile << "Supernodo " << (i + 1) << ": " << supernodeSizes[i] << " nodos\n";
+      }
+      outFile.close();  // Cerrar archivo
+    } else {
+      std::cerr << "No se pudo abrir el archivo para escribir." << std::endl;
+    }
+
+    SYMPACK_TIMER_STOP(FindSupernodes);
+  }*/
+  inline void symPACKMatrixMeta<T>::findSupernodes(ETree& tree, Ordering & aOrder, std::vector<Int> & cc, std::vector<Int> & supMembership, std::vector<Int> & xsuper, Int maxSize) {
       SYMPACK_TIMER_START(FindSupernodes);
       Int size = this->iSize_;
-      //TODO: tree order cc supmembership xsuper are all members of the class. no need for argument
       supMembership.resize(size);
 
       Int nsuper = 1;
       Int supsize = 1;
       supMembership[0] = 1;
 
-      for(Int i =2; i<=size;i++){
-        Int prev_parent = tree.PostParent(i-2);
-        if(prev_parent == i){
-          if(cc[i-2] == cc[i-1]+1 ) {
-            if(supsize<maxSize || maxSize==0){
-              ++supsize;
-              supMembership[i-1] = nsuper;
-              continue;
-            }
+      for (Int i = 2; i <= size; i++) {
+          Int prev_parent = tree.PostParent(i - 2);
+          if (prev_parent == i) {
+              if (cc[i - 2] == cc[i - 1] + 1) {
+                  if (supsize < maxSize || maxSize == 0) {
+                      ++supsize;
+                      supMembership[i - 1] = nsuper;
+                      continue;
+                  }
+              }
           }
-        }
 
-        nsuper++;
-        supsize = 1;
-        supMembership[i-1] = nsuper;
+          nsuper++;
+          supsize = 1;
+          supMembership[i - 1] = nsuper;
       }
 
-      xsuper.resize(nsuper+1);
-      Int lstsup = nsuper+1;
-      for(Int i = size; i>=1;--i){
-        Int ksup = supMembership[i-1];
-        if(ksup!=lstsup){
-          xsuper[lstsup-1] = i + 1; 
-        }
-        lstsup = ksup;
+      xsuper.resize(nsuper + 1);
+      Int lstsup = nsuper + 1;
+      for (Int i = size; i >= 1; --i) {
+          Int ksup = supMembership[i - 1];
+          if (ksup != lstsup) {
+              xsuper[lstsup - 1] = i + 1;
+          }
+          lstsup = ksup;
       }
-      xsuper[0]=1;
+      xsuper[0] = 1;
+
+        // Calcular los tamaños de los supernodos
+      std::vector<int> supernode_sizes;
+      for (int i = 1; i < xsuper.size(); i++) {
+          int start = xsuper[i - 1] - 1; // -1 porque los índices son 1-based
+          int end = xsuper[i] - 2; // -2 porque el índice final es exclusivo
+          int size = end - start + 1;  // Número de filas y columnas del supernodo
+          supernode_sizes.push_back(size);
+      }
+      sort(supernode_sizes.begin(), supernode_sizes.end());
+
+      // Guardar los tamaños de los supernodos en un archivo
+      std::ofstream outfile("supernodo_sizes.txt");
+      if (outfile.is_open()) {
+          for (int i = 0; i < supernode_sizes.size(); ++i) {
+              int rows = supernode_sizes[i];  // Número de filas del supernodo
+              int cols = supernode_sizes[i];  // Suponiendo que las filas y columnas son iguales
+              outfile << "Supernodo " << i + 1 << ": " << rows << " filas, " << cols << " columnas" << std::endl;
+          }
+          outfile.close();
+      } else {
+          std::cerr << "No se pudo abrir el archivo para escribir." << std::endl;
+      }
+
       SYMPACK_TIMER_STOP(FindSupernodes);
-    }
+  }
 
   template <typename T> 
     inline void symPACKMatrixMeta<T>::getLColRowCount(DistSparseMatrixGraph & dgraph, std::vector<Int> & cc, std::vector<Int> & rc){
